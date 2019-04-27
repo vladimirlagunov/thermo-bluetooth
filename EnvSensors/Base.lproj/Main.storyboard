@@ -112,6 +112,12 @@
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="Uee-0j-aNJ"/>
                     </view>
+                    <connections>
+                        <outlet property="co2Label" destination="XTY-VN-Gfa" id="k5m-pW-lca"/>
+                        <outlet property="humidityLabel" destination="DaO-4j-CVD" id="N8l-0N-5Fu"/>
+                        <outlet property="pressureLabel" destination="j2f-Kg-8Lz" id="aPL-tb-E2r"/>
+                        <outlet property="temperatureLabel" destination="6Xe-6K-xhe" id="3r4-C3-dag"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
