@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		90227E122274BE6400C7A858 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 90227E112274BE6400C7A858 /* CoreBluetooth.framework */; };
+		90227E142274BED700C7A858 /* BluetoothDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90227E132274BED700C7A858 /* BluetoothDelegate.swift */; };
 		90546A3A2247DA3B000155C4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A392247DA3B000155C4 /* AppDelegate.swift */; };
 		90546A3C2247DA3B000155C4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A3B2247DA3B000155C4 /* ViewController.swift */; };
 		90546A3F2247DA3B000155C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90546A3D2247DA3B000155C4 /* Main.storyboard */; };
@@ -74,6 +76,9 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		90227E102274BDB800C7A858 /* EnvSensors.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = EnvSensors.entitlements; sourceTree = "<group>"; };
+		90227E112274BE6400C7A858 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
+		90227E132274BED700C7A858 /* BluetoothDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BluetoothDelegate.swift; sourceTree = "<group>"; };
 		90546A362247DA3B000155C4 /* EnvSensors.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = EnvSensors.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		90546A392247DA3B000155C4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		90546A3B2247DA3B000155C4 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -103,6 +108,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				90227E122274BE6400C7A858 /* CoreBluetooth.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,6 +129,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		90227E0D2274BDB800C7A858 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				90227E112274BE6400C7A858 /* CoreBluetooth.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		90546A2D2247DA3A000155C4 = {
 			isa = PBXGroup;
 			children = (
@@ -131,6 +145,7 @@
 				90546A572247DA3C000155C4 /* EnvSensors WatchKit App */,
 				90546A662247DA3D000155C4 /* EnvSensors WatchKit Extension */,
 				90546A372247DA3B000155C4 /* Products */,
+				90227E0D2274BDB800C7A858 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -148,6 +163,7 @@
 		90546A382247DA3B000155C4 /* EnvSensors */ = {
 			isa = PBXGroup;
 			children = (
+				90227E102274BDB800C7A858 /* EnvSensors.entitlements */,
 				90546A392247DA3B000155C4 /* AppDelegate.swift */,
 				90546A812247EF2C000155C4 /* ModelController.swift */,
 				90546A3B2247DA3B000155C4 /* ViewController.swift */,
@@ -155,6 +171,7 @@
 				90546A402247DA3C000155C4 /* Assets.xcassets */,
 				90546A422247DA3C000155C4 /* LaunchScreen.storyboard */,
 				90546A452247DA3C000155C4 /* Info.plist */,
+				90227E132274BED700C7A858 /* BluetoothDelegate.swift */,
 			);
 			path = EnvSensors;
 			sourceTree = "<group>";
@@ -277,9 +294,19 @@
 				TargetAttributes = {
 					90546A352247DA3A000155C4 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
+						SystemCapabilities = {
+							com.apple.BackgroundModes = {
+								enabled = 1;
+							};
+							com.apple.WAC = {
+								enabled = 0;
+							};
+						};
 					};
 					90546A492247DA3C000155C4 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 						TestTargetID = 90546A352247DA3A000155C4;
 					};
 					90546A522247DA3C000155C4 = {
@@ -287,6 +314,7 @@
 					};
 					90546A612247DA3D000155C4 = {
 						CreatedOnToolsVersion = 10.1;
+						LastSwiftMigration = 1020;
 					};
 				};
 			};
@@ -356,6 +384,7 @@
 				90546A822247EF2C000155C4 /* ModelController.swift in Sources */,
 				90546A3C2247DA3B000155C4 /* ViewController.swift in Sources */,
 				90546A3A2247DA3B000155C4 /* AppDelegate.swift in Sources */,
+				90227E142274BED700C7A858 /* BluetoothDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -557,7 +586,7 @@
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 5.1;
 			};
@@ -579,7 +608,7 @@
 				PRODUCT_NAME = "${TARGET_NAME}";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 5.1;
 			};
@@ -636,7 +665,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -654,7 +683,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -674,7 +703,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensorsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EnvSensors.app/EnvSensors";
 			};
@@ -695,7 +724,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensorsTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EnvSensors.app/EnvSensors";
 			};

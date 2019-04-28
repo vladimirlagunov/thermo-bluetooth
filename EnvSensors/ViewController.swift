@@ -24,6 +24,10 @@ class ViewController: UIViewController {
             n.addObserver(forName: Notification.Name.onCO2Change, object: nil, queue: nil,
                           using: { (v) in self.setCO2(value: v.object) })
         }
+        temperatureLabel.text = absentValue
+        pressureLabel.text = absentValue
+        humidityLabel.text = absentValue
+        co2Label.text = absentValue
     }
 
     @IBOutlet weak var temperatureLabel: UILabel!
@@ -42,8 +46,9 @@ class ViewController: UIViewController {
     }
     
     func setPressure(value: Any?) {
-        if let v = value as? Double {
-            pressureLabel.text = "\(Int(v)) mmHg"
+        if let hPa = value as? Double {
+            let mmHg = hPa * 0.75006375541921
+            pressureLabel.text = "\(Int(mmHg)) mmHg"
         } else {
             pressureLabel.text = absentValue
         }
@@ -51,7 +56,7 @@ class ViewController: UIViewController {
     
     func setHumidity(value: Any?) {
         if let v = value as? Double {
-            humidityLabel.text = String(format: "%.1f%", v)
+            humidityLabel.text = String(format: "%.1f%%", v)
         } else {
             humidityLabel.text = absentValue
         }

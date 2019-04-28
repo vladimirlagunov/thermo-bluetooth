@@ -6,6 +6,7 @@
 //  Copyright © 2019 Vladimir Lagunov. All rights reserved.
 //
 
+import CoreBluetooth
 import UIKit
 
 @UIApplicationMain
@@ -14,11 +15,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     
     private var randomValueTimer: Timer?
+    private var myCentralManager: CBCentralManager?
+    private var bluetoothDelegate: BluetoothDelegate?
     var appNotifications: NotificationCenter?
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         appNotifications = NotificationCenter.init()
+        bluetoothDelegate = BluetoothDelegate.init(notificationCenter: appNotifications!)
+        myCentralManager = CBCentralManager.init(delegate: bluetoothDelegate!, queue: nil)
         return true
     }
 
@@ -40,9 +45,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
     func applicationDidBecomeActive(_ application: UIApplication) {
         // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
-        randomValueTimer = Timer.scheduledTimer(withTimeInterval: 5.0,
-                                                repeats: true,
-                                                block: { timer in self.makeRandomValues() })
+//        randomValueTimer = Timer.scheduledTimer(withTimeInterval: 5.0,
+//                                                repeats: true,
+//                                                block: { timer in self.makeRandomValues() })
     }
 
     func applicationWillTerminate(_ application: UIApplication) {
@@ -59,4 +64,3 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
     }
 }
-
