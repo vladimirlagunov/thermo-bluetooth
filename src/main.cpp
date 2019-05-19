@@ -26,6 +26,7 @@ public:
     typedef int16_t TemperatureType_t;
     typedef uint16_t HumidityType_t;
     typedef uint32_t PressureType_t;
+    typedef uint16_t CO2Type_t;
 
     /**
      * @brief   EnvironmentalService constructor.
@@ -38,7 +39,9 @@ public:
             humidityCharacteristic(GattCharacteristic::UUID_HUMIDITY_CHAR, &humidity,
                                    GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY),
             pressureCharacteristic(GattCharacteristic::UUID_PRESSURE_CHAR, &pressure,
-                                   GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) {
+                                   GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY),
+            co2Characteristic(0x2A70 /* non-standard extension */, &co2,
+                              GattCharacteristic::BLE_GATT_CHAR_PROPERTIES_NOTIFY) {
         static bool serviceAdded = false; /* We should only ever need to add the information service once. */
         if (serviceAdded) {
             return;
@@ -46,7 +49,8 @@ public:
 
         GattCharacteristic *charTable[] = {&humidityCharacteristic,
                                            &pressureCharacteristic,
-                                           &temperatureCharacteristic};
+                                           &temperatureCharacteristic,
+                                           &co2Characteristic};
 
         GattService environmentalService(GattService::UUID_ENVIRONMENTAL_SERVICE, charTable,
                                          sizeof(charTable) / sizeof(GattCharacteristic *));
@@ -83,16 +87,23 @@ public:
                                sizeof(TemperatureType_t));
     }
 
+    void updateCO2(CO2Type_t newCO2Val) {
+        co2 = newCO2Val;
+        ble.gattServer().write(co2Characteristic.getValueHandle(), (uint8_t *) &co2, sizeof(CO2Type_t));
+    }
+
 private:
     BLE &ble;
 
     TemperatureType_t temperature;
     HumidityType_t humidity;
     PressureType_t pressure;
+    CO2Type_t co2;
 
     ReadOnlyGattCharacteristic<TemperatureType_t> temperatureCharacteristic;
     ReadOnlyGattCharacteristic<HumidityType_t> humidityCharacteristic;
     ReadOnlyGattCharacteristic<PressureType_t> pressureCharacteristic;
+    ReadOnlyGattCharacteristic<CO2Type_t> co2Characteristic;
 };
 
 class App {
@@ -110,7 +121,7 @@ class App {
 
     void bleInitComplete(BLE::InitializationCompleteCallbackContext *context);
 
-    void measureBme280();
+    void measureSensors();
 
     void bleOnDisconnect(const Gap::DisconnectionCallbackParams_t *params) {
         std::cerr << "Someone disconnected" << std::endl;
@@ -186,7 +197,7 @@ void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
     std::cerr << "BLE initialized successfully. Device name: " << deviceName << std::endl;
 }
 
-void App::measureBme280() {
+void App::measureSensors() {
     static int counter = 0;
     float temperature = bme280.getTemperature();
     float pressure = bme280.getPressure();
@@ -207,6 +218,7 @@ void App::measureBme280() {
         environmentalService->updateTemperature(temperature);
         environmentalService->updatePressure((uint32_t) pressure);
         environmentalService->updateHumidity((uint16_t) humidity);
+        environmentalService->updateCO2(co2ppm);
     } else {
         std::cerr << "Gap is not connected" << std::endl;
     }
@@ -218,8 +230,8 @@ int App::run() {
         if (error != BLE_ERROR_NONE) {
             std::cerr << "bluetooth init error " << error << std::endl;
         }
-        eventQueue.call(this, &App::measureBme280);
-        eventQueue.call_every(5000, this, &App::measureBme280);
+        eventQueue.call(this, &App::measureSensors);
+        eventQueue.call_every(5000, this, &App::measureSensors);
     });
     eventQueue.dispatch_forever();
     return 0;
