@@ -9,6 +9,9 @@
 #include <BME280.h>
 
 #include <nrf_soc.h>
+#include <events/EventQueue.h>
+
+#include "MhZ19b.hpp"
 
 /**
 * @class EnvironmentalService
@@ -93,11 +96,12 @@ private:
 };
 
 class App {
-    EventQueue eventQueue{50 * EVENTS_EVENT_SIZE};
+    events::EventQueue eventQueue{50 * EVENTS_EVENT_SIZE};
     BLE &bluetooth = BLE::Instance();
     const char deviceName[11] = "shitmeter";
     const uint16_t bleUuidList[1]{GattService::UUID_ENVIRONMENTAL_SERVICE};
     std::unique_ptr<EnvironmentalService> environmentalService;
+    std::unique_ptr<mhz19b::Supervisor> mhz19b;
     BME280 bme280{P0_27, P0_26};
 
     void scheduleBleEventProcessing(BLE::OnEventsToProcessCallbackContext *context) {
@@ -145,6 +149,7 @@ void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
     ble.gattClient().onHVX({this, &App::onHVX});
 
     environmentalService = std::make_unique<EnvironmentalService>(ble);
+    mhz19b = std::make_unique<mhz19b::Supervisor>(eventQueue, P0_12, P0_11);
 
     Gap &gap = ble.gap();
     gap.onConnection(this, &App::bleOnConnect);
@@ -186,13 +191,15 @@ void App::measureBme280() {
     float temperature = bme280.getTemperature();
     float pressure = bme280.getPressure();
     float humidity = bme280.getHumidity();
+    uint16_t co2ppm = mhz19b->getCo2Ppm();
 
     std::cerr
             << std::endl
             << "============ " << counter++ << std::endl
             << "Temperature: " << temperature << " C" << std::endl
             << "Pressure:    " << pressure << " hPa" << std::endl
-            << "Humidity:    " << humidity << "%" << std::endl;
+            << "Humidity:    " << humidity << "%" << std::endl
+            << "CO2:         " << co2ppm << " PPM" << std::endl;
 
     Gap &gap = bluetooth.gap();
     if (gap.getState().connected) {
