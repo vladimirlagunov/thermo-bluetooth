@@ -13,7 +13,8 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
     private let humidityUuid = CBUUID(string: "0x2A6F")
     private let pressureUuid = CBUUID(string: "0x2A6D")
     private let temperatureUuid = CBUUID(string: "0x2A6E")
-    
+    private let co2Uuid = CBUUID(string: "0x2A70")  // non-standard extension
+
     private var notificationCenter: NotificationCenter
     private var interestingPeripheral: CBPeripheral?
     private var scanTimer: Timer?
@@ -68,7 +69,7 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
     
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for c in service.characteristics! {
-            if c.uuid == temperatureUuid || c.uuid == pressureUuid || c.uuid == humidityUuid {
+            if c.uuid == temperatureUuid || c.uuid == pressureUuid || c.uuid == humidityUuid || c.uuid == co2Uuid {
                 peripheral.setNotifyValue(true, for: c)
                 peripheral.readValue(for: c)
             }
@@ -103,6 +104,11 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
             let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<UInt16>) in v.pointee }
             if (value != nil) {
                 notificationCenter.post(name: Notification.Name.onHumidityChange, object: Double.init(value!) / 100.0)
+            }
+        } else if (characteristic.uuid == co2Uuid) {
+            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<UInt16>) in v.pointee }
+            if (value != nil) {
+                notificationCenter.post(name: Notification.Name.onCO2Change, object: Double.init(value!))
             }
         }
     }
