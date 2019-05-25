@@ -163,6 +163,13 @@ class MHZ19B {
         });
     }
 
+public:
+    MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin, Callback<void(uint16_t)> co2handler)
+            : eventQueue(eventQueue),
+              mhz19bSerial(transmitPin, receivePin, 9600),
+              receiveBuffer{0},
+              co2handler{co2handler} {}
+
     void sendRequest() {
         if (mhz19bSerial.writeable()) {
             mhz19bSerial.abort_read();
@@ -172,7 +179,7 @@ class MHZ19B {
                     [this](int) {
                         eventQueue.call([this]() {
                             mhz19bSerial.read(
-                                    receiveBuffer, 9,
+                                    receiveBuffer, sizeof(receiveBuffer),
                                     {this, &MHZ19B::onDataReceived},
                                     SERIAL_EVENT_RX_ALL);
                         });
@@ -183,16 +190,6 @@ class MHZ19B {
             std::cerr << "Serial is not writeable" << std::endl;
         }
     }
-
-public:
-    MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin, Callback<void(uint16_t)> co2handler)
-            : eventQueue(eventQueue),
-              mhz19bSerial(transmitPin, receivePin, 9600),
-              receiveBuffer{0},
-              co2handler{co2handler} {
-        eventQueue.call(this, &MHZ19B::sendRequest);
-        eventQueue.call_every(5000, this, &MHZ19B::sendRequest);
-    }
 };
 
 class App {
@@ -201,7 +198,7 @@ class App {
     const char deviceName[11] = "shitmeter";
     const uint16_t bleUuidList[1]{GattService::UUID_ENVIRONMENTAL_SERVICE};
     std::unique_ptr<EnvironmentalService> environmentalService;
-    std::unique_ptr<MHZ19B> mhz19b;
+    MHZ19B mhz19b{eventQueue, P0_12, P0_11, {this, &App::onCO2Change}};
     BME280 bme280{P0_27, P0_26};
     float temperature = 0;
     float pressure = 0;
@@ -229,10 +226,16 @@ class App {
 
     void measureHumidity();
 
+    void measureCO2();
+
     void printInfo();
+
+    void onCO2Change(uint16_t co2ppm);
 
 public:
     int run();
+
+    bool isGapConnected() const;
 };
 
 void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
@@ -254,9 +257,6 @@ void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
     ble.onEventsToProcess({this, &App::scheduleBleEventProcessing});
 
     environmentalService = std::make_unique<EnvironmentalService>(ble);
-    mhz19b = std::make_unique<MHZ19B>(eventQueue, P0_12, P0_11, [this](uint16_t v) {
-        co2ppm = v;
-    });
 
     Gap &gap = ble.gap();
     gap.onConnection(this, &App::bleOnConnect);
@@ -304,16 +304,15 @@ void App::printInfo() {
             << "Humidity:    " << humidity << "%" << std::endl
             << "CO2:         " << co2ppm << " PPM" << std::endl;
 
-    Gap &gap = bluetooth.gap();
-    if (gap.getState().connected) {
+    if (isGapConnected()) {
         std::cerr << "Gap is connected" << std::endl;
-        environmentalService->updateTemperature(temperature);
-        environmentalService->updatePressure((uint32_t) pressure);
-        environmentalService->updateHumidity((uint16_t) humidity);
-        environmentalService->updateCO2(co2ppm);
     } else {
         std::cerr << "Gap is not connected" << std::endl;
     }
+}
+
+bool App::isGapConnected() const {
+    return bluetooth.gap().getState().connected;
 }
 
 void App::measureTemperature() {
@@ -337,6 +336,17 @@ void App::measureHumidity() {
     }
 }
 
+void App::measureCO2() {
+    mhz19b.sendRequest();
+}
+
+void App::onCO2Change(uint16_t co2ppm) {
+    this->co2ppm = co2ppm;
+    if (bluetooth.gap().getState().connected) {
+        environmentalService->updateCO2(co2ppm);
+    }
+}
+
 int App::run() {
     eventQueue.call([&]() {
         ble_error_t error = bluetooth.init(this, &App::bleInitComplete);
@@ -347,6 +357,7 @@ int App::run() {
         eventQueue.call_every(3000, this, &App::measureTemperature);
         eventQueue.call_every(3000, this, &App::measurePressure);
         eventQueue.call_every(3000, this, &App::measureHumidity);
+        eventQueue.call_every(3000, this, &App::measureCO2);
         eventQueue.call_every(5000, this, &App::printInfo);
     });
     eventQueue.dispatch_forever();
