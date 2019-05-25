@@ -1,4 +1,5 @@
 #include <iostream>
+#include <limits>
 #include <memory>
 
 #include <ble/BLE.h>
@@ -60,7 +61,7 @@ public:
      * @brief   Update humidity characteristic.
      * @param   newHumidityVal New humidity measurement.
      */
-    void updateHumidity(HumidityType_t newHumidityVal) {
+    void updateHumidity(float newHumidityVal) {
         humidity = (HumidityType_t) (newHumidityVal * 100);
         ble.gattServer().write(humidityCharacteristic.getValueHandle(), (uint8_t *) &humidity, sizeof(HumidityType_t));
     }
@@ -69,7 +70,7 @@ public:
      * @brief   Update pressure characteristic.
      * @param   newPressureVal New pressure measurement.
      */
-    void updatePressure(PressureType_t newPressureVal) {
+    void updatePressure(float newPressureVal) {
         pressure = (PressureType_t) (newPressureVal * 10);
         ble.gattServer().write(pressureCharacteristic.getValueHandle(), (uint8_t *) &pressure, sizeof(PressureType_t));
     }
@@ -84,7 +85,7 @@ public:
                                sizeof(TemperatureType_t));
     }
 
-    void updateCO2(CO2Type_t newCO2Val) {
+    void updateCO2(float newCO2Val) {
         co2 = newCO2Val;
         ble.gattServer().write(co2Characteristic.getValueHandle(), (uint8_t *) &co2, sizeof(CO2Type_t));
     }
@@ -92,10 +93,10 @@ public:
 private:
     BLE &ble;
 
-    TemperatureType_t temperature = 0;
-    HumidityType_t humidity = 0;
-    PressureType_t pressure = 0;
-    CO2Type_t co2 = 0;
+    TemperatureType_t temperature = std::numeric_limits<TemperatureType_t>::max();
+    HumidityType_t humidity = std::numeric_limits<HumidityType_t>::max();
+    PressureType_t pressure = std::numeric_limits<PressureType_t >::max();
+    CO2Type_t co2 = std::numeric_limits<CO2Type_t>::max();
 
     ReadOnlyGattCharacteristic<TemperatureType_t> temperatureCharacteristic;
     ReadOnlyGattCharacteristic<HumidityType_t> humidityCharacteristic;
@@ -175,7 +176,8 @@ class MHZ19B {
     }
 
 public:
-    MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin, Callback<void(uint16_t)> co2handler)
+    MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin,
+           Callback<void(uint16_t)> &&co2handler)
             : eventQueue(eventQueue),
               mhz19bSerial(transmitPin, receivePin, 9600),
               co2handler{co2handler} {}
@@ -210,10 +212,10 @@ class App {
     std::unique_ptr<EnvironmentalService> environmentalService;
     MHZ19B mhz19b{eventQueue, P0_12, P0_11, {this, &App::onCO2Change}};
     BME280 bme280{P0_27, P0_26};
-    float temperature = 0;
-    float pressure = 0;
-    float humidity = 0;
-    uint16_t co2ppm;
+    float temperature = INFINITY;
+    float pressure = INFINITY;
+    float humidity = INFINITY;
+    float co2ppm = INFINITY;
 
     void scheduleBleEventProcessing(BLE::OnEventsToProcessCallbackContext *context) {
         eventQueue.call(&context->ble, &BLE::processEvents);
