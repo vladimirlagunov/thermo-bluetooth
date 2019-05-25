@@ -8,7 +8,7 @@
 
 import CoreBluetooth
 
-class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
+class BluetoothDelegate: NSObject, CBCentralManagerDelegate, CBPeripheralDelegate {
     private let environmentalUuid = CBUUID(string: "0x181A")
     private let humidityUuid = CBUUID(string: "0x2A6F")
     private let pressureUuid = CBUUID(string: "0x2A6D")
@@ -29,9 +29,8 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
             // TODO suspend timer when app goes background?
             scanTimer = Timer.scheduledTimer(withTimeInterval: 20.0, repeats: true, block: { timer in
                 if self.interestingPeripheral?.state != CBPeripheralState.connecting
-                    && self.interestingPeripheral?.state != CBPeripheralState.connected
-                    && !central.isScanning
-                {
+                           && self.interestingPeripheral?.state != CBPeripheralState.connected
+                           && !central.isScanning {
                     self.interestingPeripheral = nil
                     central.scanForPeripherals(withServices: nil, options: nil)
                 }
@@ -39,7 +38,7 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
         }
     }
 
-    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
+    func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String: Any], rssi RSSI: NSNumber) {
         if (advertisementData[CBAdvertisementDataLocalNameKey] as? NSString == "shitmeter") {
             central.stopScan()
             interestingPeripheral = peripheral
@@ -73,7 +72,7 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
     }
 
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        setValue(characteristic, temperatureUuid, Notification.Name.onTemperatureChange, 100.0, Int16.max)
+        let _ = setValue(characteristic, temperatureUuid, Notification.Name.onTemperatureChange, 100.0, Int16.max)
                 || setValue(characteristic, pressureUuid, Notification.Name.onPressureChange, 10.0, UInt32.max)
                 || setValue(characteristic, humidityUuid, Notification.Name.onHumidityChange, 100.0, UInt16.max)
                 || setValue(characteristic, co2Uuid, Notification.Name.onCO2Change, 1.0, UInt16.max)
@@ -87,7 +86,9 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
             _ ignore: T) -> Bool {
         if (characteristic.uuid == uuid) {
             // TODO what about endianness?
-            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<T>) in v.pointee }
+            let value = characteristic.value?.withUnsafeBytes { (p: UnsafeRawBufferPointer) in
+                p.load(as: T.self)
+            }
             if (value != nil && value != ignore) {
                 notificationCenter.post(name: name, object: Double.init(value!) / divisor)
             }

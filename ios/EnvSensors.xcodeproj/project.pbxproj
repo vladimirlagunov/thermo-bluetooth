@@ -14,62 +14,17 @@
 		90546A3F2247DA3B000155C4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90546A3D2247DA3B000155C4 /* Main.storyboard */; };
 		90546A412247DA3C000155C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90546A402247DA3C000155C4 /* Assets.xcassets */; };
 		90546A442247DA3C000155C4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90546A422247DA3C000155C4 /* LaunchScreen.storyboard */; };
-		90546A4F2247DA3C000155C4 /* EnvSensorsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A4E2247DA3C000155C4 /* EnvSensorsTests.swift */; };
-		90546A542247DA3C000155C4 /* EnvSensors WatchKit App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 90546A532247DA3C000155C4 /* EnvSensors WatchKit App.app */; };
-		90546A5A2247DA3C000155C4 /* Interface.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 90546A582247DA3C000155C4 /* Interface.storyboard */; };
-		90546A5C2247DA3D000155C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90546A5B2247DA3D000155C4 /* Assets.xcassets */; };
-		90546A632247DA3D000155C4 /* EnvSensors WatchKit Extension.appex in Embed App Extensions */ = {isa = PBXBuildFile; fileRef = 90546A622247DA3D000155C4 /* EnvSensors WatchKit Extension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
-		90546A682247DA3D000155C4 /* InterfaceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A672247DA3D000155C4 /* InterfaceController.swift */; };
-		90546A6A2247DA3D000155C4 /* ExtensionDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A692247DA3D000155C4 /* ExtensionDelegate.swift */; };
-		90546A6C2247DA3D000155C4 /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A6B2247DA3D000155C4 /* NotificationController.swift */; };
-		90546A6E2247DA3D000155C4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 90546A6D2247DA3D000155C4 /* Assets.xcassets */; };
 		90546A822247EF2C000155C4 /* ModelController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90546A812247EF2C000155C4 /* ModelController.swift */; };
 		FC8968D2F68834ED3B70246E /* MyMainUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC896E1F5D76D56C5674B59D /* MyMainUIView.swift */; };
 /* End PBXBuildFile section */
 
-/* Begin PBXContainerItemProxy section */
-		90546A4B2247DA3C000155C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 90546A2E2247DA3A000155C4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 90546A352247DA3A000155C4;
-			remoteInfo = EnvSensors;
-		};
-		90546A552247DA3C000155C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 90546A2E2247DA3A000155C4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 90546A522247DA3C000155C4;
-			remoteInfo = "EnvSensors WatchKit App";
-		};
-		90546A642247DA3D000155C4 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 90546A2E2247DA3A000155C4 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 90546A612247DA3D000155C4;
-			remoteInfo = "EnvSensors WatchKit Extension";
-		};
-/* End PBXContainerItemProxy section */
-
 /* Begin PBXCopyFilesBuildPhase section */
-		90546A762247DA3D000155C4 /* Embed App Extensions */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 13;
-			files = (
-				90546A632247DA3D000155C4 /* EnvSensors WatchKit Extension.appex in Embed App Extensions */,
-			);
-			name = "Embed App Extensions";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		90546A7A2247DA3D000155C4 /* Embed Watch Content */ = {
 			isa = PBXCopyFilesBuildPhase;
 			buildActionMask = 2147483647;
 			dstPath = "$(CONTENTS_FOLDER_PATH)/Watch";
 			dstSubfolderSpec = 16;
 			files = (
-				90546A542247DA3C000155C4 /* EnvSensors WatchKit App.app in Embed Watch Content */,
 			);
 			name = "Embed Watch Content";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -87,20 +42,6 @@
 		90546A402247DA3C000155C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		90546A432247DA3C000155C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		90546A452247DA3C000155C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		90546A4A2247DA3C000155C4 /* EnvSensorsTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = EnvSensorsTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
-		90546A4E2247DA3C000155C4 /* EnvSensorsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EnvSensorsTests.swift; sourceTree = "<group>"; };
-		90546A502247DA3C000155C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		90546A532247DA3C000155C4 /* EnvSensors WatchKit App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "EnvSensors WatchKit App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		90546A592247DA3C000155C4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Interface.storyboard; sourceTree = "<group>"; };
-		90546A5B2247DA3D000155C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		90546A5D2247DA3D000155C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		90546A622247DA3D000155C4 /* EnvSensors WatchKit Extension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = "EnvSensors WatchKit Extension.appex"; sourceTree = BUILT_PRODUCTS_DIR; };
-		90546A672247DA3D000155C4 /* InterfaceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InterfaceController.swift; sourceTree = "<group>"; };
-		90546A692247DA3D000155C4 /* ExtensionDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExtensionDelegate.swift; sourceTree = "<group>"; };
-		90546A6B2247DA3D000155C4 /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
-		90546A6D2247DA3D000155C4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		90546A6F2247DA3D000155C4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		90546A702247DA3D000155C4 /* PushNotificationPayload.apns */ = {isa = PBXFileReference; lastKnownFileType = text; path = PushNotificationPayload.apns; sourceTree = "<group>"; };
 		90546A812247EF2C000155C4 /* ModelController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ModelController.swift; sourceTree = "<group>"; };
 		FC896E1F5D76D56C5674B59D /* MyMainUIView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MyMainUIView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -111,20 +52,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				90227E122274BE6400C7A858 /* CoreBluetooth.framework in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A472247DA3C000155C4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A5F2247DA3D000155C4 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -143,9 +70,6 @@
 			isa = PBXGroup;
 			children = (
 				90546A382247DA3B000155C4 /* EnvSensors */,
-				90546A4D2247DA3C000155C4 /* EnvSensorsTests */,
-				90546A572247DA3C000155C4 /* EnvSensors WatchKit App */,
-				90546A662247DA3D000155C4 /* EnvSensors WatchKit Extension */,
 				90546A372247DA3B000155C4 /* Products */,
 				90227E0D2274BDB800C7A858 /* Frameworks */,
 			);
@@ -155,9 +79,6 @@
 			isa = PBXGroup;
 			children = (
 				90546A362247DA3B000155C4 /* EnvSensors.app */,
-				90546A4A2247DA3C000155C4 /* EnvSensorsTests.xctest */,
-				90546A532247DA3C000155C4 /* EnvSensors WatchKit App.app */,
-				90546A622247DA3D000155C4 /* EnvSensors WatchKit Extension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -179,38 +100,6 @@
 			path = EnvSensors;
 			sourceTree = "<group>";
 		};
-		90546A4D2247DA3C000155C4 /* EnvSensorsTests */ = {
-			isa = PBXGroup;
-			children = (
-				90546A4E2247DA3C000155C4 /* EnvSensorsTests.swift */,
-				90546A502247DA3C000155C4 /* Info.plist */,
-			);
-			path = EnvSensorsTests;
-			sourceTree = "<group>";
-		};
-		90546A572247DA3C000155C4 /* EnvSensors WatchKit App */ = {
-			isa = PBXGroup;
-			children = (
-				90546A582247DA3C000155C4 /* Interface.storyboard */,
-				90546A5B2247DA3D000155C4 /* Assets.xcassets */,
-				90546A5D2247DA3D000155C4 /* Info.plist */,
-			);
-			path = "EnvSensors WatchKit App";
-			sourceTree = "<group>";
-		};
-		90546A662247DA3D000155C4 /* EnvSensors WatchKit Extension */ = {
-			isa = PBXGroup;
-			children = (
-				90546A672247DA3D000155C4 /* InterfaceController.swift */,
-				90546A692247DA3D000155C4 /* ExtensionDelegate.swift */,
-				90546A6B2247DA3D000155C4 /* NotificationController.swift */,
-				90546A6D2247DA3D000155C4 /* Assets.xcassets */,
-				90546A6F2247DA3D000155C4 /* Info.plist */,
-				90546A702247DA3D000155C4 /* PushNotificationPayload.apns */,
-			);
-			path = "EnvSensors WatchKit Extension";
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -226,64 +115,11 @@
 			buildRules = (
 			);
 			dependencies = (
-				90546A562247DA3C000155C4 /* PBXTargetDependency */,
 			);
 			name = EnvSensors;
 			productName = EnvSensors;
 			productReference = 90546A362247DA3B000155C4 /* EnvSensors.app */;
 			productType = "com.apple.product-type.application";
-		};
-		90546A492247DA3C000155C4 /* EnvSensorsTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 90546A7E2247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensorsTests" */;
-			buildPhases = (
-				90546A462247DA3C000155C4 /* Sources */,
-				90546A472247DA3C000155C4 /* Frameworks */,
-				90546A482247DA3C000155C4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				90546A4C2247DA3C000155C4 /* PBXTargetDependency */,
-			);
-			name = EnvSensorsTests;
-			productName = EnvSensorsTests;
-			productReference = 90546A4A2247DA3C000155C4 /* EnvSensorsTests.xctest */;
-			productType = "com.apple.product-type.bundle.unit-test";
-		};
-		90546A522247DA3C000155C4 /* EnvSensors WatchKit App */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 90546A772247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensors WatchKit App" */;
-			buildPhases = (
-				90546A512247DA3C000155C4 /* Resources */,
-				90546A762247DA3D000155C4 /* Embed App Extensions */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				90546A652247DA3D000155C4 /* PBXTargetDependency */,
-			);
-			name = "EnvSensors WatchKit App";
-			productName = "EnvSensors WatchKit App";
-			productReference = 90546A532247DA3C000155C4 /* EnvSensors WatchKit App.app */;
-			productType = "com.apple.product-type.application.watchapp2";
-		};
-		90546A612247DA3D000155C4 /* EnvSensors WatchKit Extension */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 90546A732247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensors WatchKit Extension" */;
-			buildPhases = (
-				90546A5E2247DA3D000155C4 /* Sources */,
-				90546A5F2247DA3D000155C4 /* Frameworks */,
-				90546A602247DA3D000155C4 /* Resources */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-			);
-			name = "EnvSensors WatchKit Extension";
-			productName = "EnvSensors WatchKit Extension";
-			productReference = 90546A622247DA3D000155C4 /* EnvSensors WatchKit Extension.appex */;
-			productType = "com.apple.product-type.watchkit2-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -335,9 +171,6 @@
 			projectRoot = "";
 			targets = (
 				90546A352247DA3A000155C4 /* EnvSensors */,
-				90546A492247DA3C000155C4 /* EnvSensorsTests */,
-				90546A522247DA3C000155C4 /* EnvSensors WatchKit App */,
-				90546A612247DA3D000155C4 /* EnvSensors WatchKit Extension */,
 			);
 		};
 /* End PBXProject section */
@@ -350,30 +183,6 @@
 				90546A442247DA3C000155C4 /* LaunchScreen.storyboard in Resources */,
 				90546A412247DA3C000155C4 /* Assets.xcassets in Resources */,
 				90546A3F2247DA3B000155C4 /* Main.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A482247DA3C000155C4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A512247DA3C000155C4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				90546A5C2247DA3D000155C4 /* Assets.xcassets in Resources */,
-				90546A5A2247DA3C000155C4 /* Interface.storyboard in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A602247DA3D000155C4 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				90546A6E2247DA3D000155C4 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -392,43 +201,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		90546A462247DA3C000155C4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				90546A4F2247DA3C000155C4 /* EnvSensorsTests.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		90546A5E2247DA3D000155C4 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				90546A6C2247DA3D000155C4 /* NotificationController.swift in Sources */,
-				90546A6A2247DA3D000155C4 /* ExtensionDelegate.swift in Sources */,
-				90546A682247DA3D000155C4 /* InterfaceController.swift in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
-
-/* Begin PBXTargetDependency section */
-		90546A4C2247DA3C000155C4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 90546A352247DA3A000155C4 /* EnvSensors */;
-			targetProxy = 90546A4B2247DA3C000155C4 /* PBXContainerItemProxy */;
-		};
-		90546A562247DA3C000155C4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 90546A522247DA3C000155C4 /* EnvSensors WatchKit App */;
-			targetProxy = 90546A552247DA3C000155C4 /* PBXContainerItemProxy */;
-		};
-		90546A652247DA3D000155C4 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 90546A612247DA3D000155C4 /* EnvSensors WatchKit Extension */;
-			targetProxy = 90546A642247DA3D000155C4 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		90546A3D2247DA3B000155C4 /* Main.storyboard */ = {
@@ -445,14 +218,6 @@
 				90546A432247DA3C000155C4 /* Base */,
 			);
 			name = LaunchScreen.storyboard;
-			sourceTree = "<group>";
-		};
-		90546A582247DA3C000155C4 /* Interface.storyboard */ = {
-			isa = PBXVariantGroup;
-			children = (
-				90546A592247DA3C000155C4 /* Base */,
-			);
-			name = Interface.storyboard;
 			sourceTree = "<group>";
 		};
 /* End PBXVariantGroup section */
@@ -574,88 +339,6 @@
 			};
 			name = Release;
 		};
-		90546A742247DA3D000155C4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				INFOPLIST_FILE = "EnvSensors WatchKit Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors.watchkitapp.watchkitextension;
-				PRODUCT_NAME = "${TARGET_NAME}";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 5.1;
-			};
-			name = Debug;
-		};
-		90546A752247DA3D000155C4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ASSETCATALOG_COMPILER_COMPLICATION_NAME = Complication;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				INFOPLIST_FILE = "EnvSensors WatchKit Extension/Info.plist";
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@executable_path/../../Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors.watchkitapp.watchkitextension;
-				PRODUCT_NAME = "${TARGET_NAME}";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 5.1;
-			};
-			name = Release;
-		};
-		90546A782247DA3D000155C4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				IBSC_MODULE = EnvSensors_WatchKit_Extension;
-				INFOPLIST_FILE = "EnvSensors WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 5.1;
-			};
-			name = Debug;
-		};
-		90546A792247DA3D000155C4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				IBSC_MODULE = EnvSensors_WatchKit_Extension;
-				INFOPLIST_FILE = "EnvSensors WatchKit App/Info.plist";
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensors.watchkitapp;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SDKROOT = watchos;
-				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 4.2;
-				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 5.1;
-			};
-			name = Release;
-		};
 		90546A7C2247DA3D000155C4 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -692,48 +375,6 @@
 			};
 			name = Release;
 		};
-		90546A7F2247DA3D000155C4 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				INFOPLIST_FILE = EnvSensorsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensorsTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EnvSensors.app/EnvSensors";
-			};
-			name = Debug;
-		};
-		90546A802247DA3D000155C4 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
-				BUNDLE_LOADER = "$(TEST_HOST)";
-				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = Z9VNAM74X7;
-				INFOPLIST_FILE = EnvSensorsTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = (
-					"$(inherited)",
-					"@executable_path/Frameworks",
-					"@loader_path/Frameworks",
-				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.example.EnvSensorsTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = "1,2";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/EnvSensors.app/EnvSensors";
-			};
-			name = Release;
-		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
@@ -746,38 +387,11 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		90546A732247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensors WatchKit Extension" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				90546A742247DA3D000155C4 /* Debug */,
-				90546A752247DA3D000155C4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		90546A772247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensors WatchKit App" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				90546A782247DA3D000155C4 /* Debug */,
-				90546A792247DA3D000155C4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
 		90546A7B2247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensors" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				90546A7C2247DA3D000155C4 /* Debug */,
 				90546A7D2247DA3D000155C4 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		90546A7E2247DA3D000155C4 /* Build configuration list for PBXNativeTarget "EnvSensorsTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				90546A7F2247DA3D000155C4 /* Debug */,
-				90546A802247DA3D000155C4 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
