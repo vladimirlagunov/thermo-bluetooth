@@ -317,21 +317,21 @@ bool App::isGapConnected() const {
 
 void App::measureTemperature() {
     temperature = bme280.getTemperature();
-    if (bluetooth.gap().getState().connected) {
+    if (isGapConnected()) {
         environmentalService->updateTemperature(temperature);
     }
 }
 
 void App::measurePressure() {
     pressure = bme280.getPressure();
-    if (bluetooth.gap().getState().connected) {
+    if (isGapConnected()) {
         environmentalService->updatePressure((uint32_t) pressure);
     }
 }
 
 void App::measureHumidity() {
     humidity = bme280.getHumidity();
-    if (bluetooth.gap().getState().connected) {
+    if (isGapConnected()) {
         environmentalService->updateHumidity((uint16_t) humidity);
     }
 }
@@ -342,7 +342,7 @@ void App::measureCO2() {
 
 void App::onCO2Change(uint16_t co2ppm) {
     this->co2ppm = co2ppm;
-    if (bluetooth.gap().getState().connected) {
+    if (isGapConnected()) {
         environmentalService->updateCO2(co2ppm);
     }
 }
