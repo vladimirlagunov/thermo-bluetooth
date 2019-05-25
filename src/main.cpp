@@ -3,15 +3,12 @@
 
 #include <ble/BLE.h>
 #include <ble/Gap.h>
-//#include <ble/services/EnvironmentalService.h>
 #include <ble/GattCharacteristic.h>
 #include <mbed.h>
 #include <BME280.h>
 
 #include <nrf_soc.h>
 #include <events/EventQueue.h>
-
-#include "MhZ19b.hpp"
 
 /**
 * @class EnvironmentalService
@@ -106,22 +103,116 @@ private:
     ReadOnlyGattCharacteristic<CO2Type_t> co2Characteristic;
 };
 
+/**
+ * NB:
+ * MHZ19B requires 5V Vin, it responds with 3.3V incorrect values.
+ */
+class MHZ19B {
+    events::EventQueue &eventQueue;
+    mbed::RawSerial mhz19bSerial;
+    uint8_t receiveBuffer[9];
+    Callback<void(uint16_t)> co2handler;
+    static constexpr uint8_t requestBuffer[9] = {
+            0xFF,  // 0 constant
+            0x01,  // 1 sensor number, probably constant
+            0x86,  // 2 read command
+            0x00,  // 3
+            0x00,  // 4
+            0x00,  // 5
+            0x00,  // 6
+            0x00,  // 7
+            0x79,  // 8 checksum
+    };
+
+    template<class T>
+    static uint8_t checksum(const T buffer, unsigned int offset) {
+        uint8_t result = 0;
+        for (unsigned int i = offset; i < offset + 7; ++i) {
+            result += buffer[i];
+        }
+        return 0xFF - result + 1;
+    }
+
+    void onDataReceived(int events) {
+        if (!(events & SERIAL_EVENT_RX_COMPLETE)) {
+            eventQueue.call([events]() {
+                std::cerr << "Got events 0x" << std::hex << events << std::dec << std::endl;
+            });
+            return;
+        }
+        eventQueue.call([this]() {
+            if (receiveBuffer[0] == 0xFF && receiveBuffer[1] == 0x86) {
+                if (checksum(receiveBuffer, 1) != receiveBuffer[8]) {
+                    std::cerr
+                            << "Checksum does not match. Expected "
+                            << checksum(receiveBuffer, 1)
+                            << ", got"
+                            << receiveBuffer[8]
+                            << std::endl;
+                } else {
+                    uint16_t co2ppm = (static_cast<uint16_t>(receiveBuffer[2]) << 8u) + receiveBuffer[3];
+                    co2handler(co2ppm);
+                }
+            } else {
+                std::cerr << "Can't fetch co2 ppm. Buffer is" << std::hex;
+                for (uint8_t i : receiveBuffer) {
+                    std::cerr << ' ' << (int) i;
+                }
+                std::cerr << std::dec << std::endl;
+            }
+        });
+    }
+
+    void sendRequest() {
+        if (mhz19bSerial.writeable()) {
+            mhz19bSerial.abort_read();
+            mhz19bSerial.abort_write();
+            mhz19bSerial.write(
+                    requestBuffer, sizeof(requestBuffer),
+                    [this](int) {
+                        eventQueue.call([this]() {
+                            mhz19bSerial.read(
+                                    receiveBuffer, 9,
+                                    {this, &MHZ19B::onDataReceived},
+                                    SERIAL_EVENT_RX_ALL);
+                        });
+                    },
+                    SERIAL_EVENT_TX_ALL);
+
+        } else {
+            std::cerr << "Serial is not writeable" << std::endl;
+        }
+    }
+
+public:
+    MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin, Callback<void(uint16_t)> co2handler)
+            : eventQueue(eventQueue),
+              mhz19bSerial(transmitPin, receivePin, 9600),
+              receiveBuffer{0},
+              co2handler{co2handler} {
+        eventQueue.call(this, &MHZ19B::sendRequest);
+        eventQueue.call_every(5000, this, &MHZ19B::sendRequest);
+    }
+};
+
 class App {
     events::EventQueue eventQueue{50 * EVENTS_EVENT_SIZE};
     BLE &bluetooth = BLE::Instance();
     const char deviceName[11] = "shitmeter";
     const uint16_t bleUuidList[1]{GattService::UUID_ENVIRONMENTAL_SERVICE};
     std::unique_ptr<EnvironmentalService> environmentalService;
-    std::unique_ptr<mhz19b::Supervisor> mhz19b;
+    std::unique_ptr<MHZ19B> mhz19b;
     BME280 bme280{P0_27, P0_26};
+    float temperature = 0;
+    float pressure = 0;
+    float humidity = 0;
+    uint16_t co2ppm;
 
     void scheduleBleEventProcessing(BLE::OnEventsToProcessCallbackContext *context) {
         eventQueue.call(&context->ble, &BLE::processEvents);
     }
 
     void bleInitComplete(BLE::InitializationCompleteCallbackContext *context);
-
-    void measureSensors();
 
     void bleOnDisconnect(const Gap::DisconnectionCallbackParams_t *params) {
         std::cerr << "Someone disconnected" << std::endl;
@@ -132,9 +223,13 @@ class App {
         std::cerr << "Someone connected" << std::endl;
     }
 
-    void onHVX(const GattHVXCallbackParams *params) {
-        std::cerr << "onHVX" << std::endl;
-    }
+    void measureTemperature();
+
+    void measurePressure();
+
+    void measureHumidity();
+
+    void printInfo();
 
 public:
     int run();
@@ -157,10 +252,11 @@ void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
     }
 
     ble.onEventsToProcess({this, &App::scheduleBleEventProcessing});
-    ble.gattClient().onHVX({this, &App::onHVX});
 
     environmentalService = std::make_unique<EnvironmentalService>(ble);
-    mhz19b = std::make_unique<mhz19b::Supervisor>(eventQueue, P0_12, P0_11);
+    mhz19b = std::make_unique<MHZ19B>(eventQueue, P0_12, P0_11, [this](uint16_t v) {
+        co2ppm = v;
+    });
 
     Gap &gap = ble.gap();
     gap.onConnection(this, &App::bleOnConnect);
@@ -197,12 +293,8 @@ void App::bleInitComplete(BLE::InitializationCompleteCallbackContext *context) {
     std::cerr << "BLE initialized successfully. Device name: " << deviceName << std::endl;
 }
 
-void App::measureSensors() {
+void App::printInfo() {
     static int counter = 0;
-    float temperature = bme280.getTemperature();
-    float pressure = bme280.getPressure();
-    float humidity = bme280.getHumidity();
-    uint16_t co2ppm = mhz19b->getCo2Ppm();
 
     std::cerr
             << std::endl
@@ -224,14 +316,38 @@ void App::measureSensors() {
     }
 }
 
+void App::measureTemperature() {
+    temperature = bme280.getTemperature();
+    if (bluetooth.gap().getState().connected) {
+        environmentalService->updateTemperature(temperature);
+    }
+}
+
+void App::measurePressure() {
+    pressure = bme280.getPressure();
+    if (bluetooth.gap().getState().connected) {
+        environmentalService->updatePressure((uint32_t) pressure);
+    }
+}
+
+void App::measureHumidity() {
+    humidity = bme280.getHumidity();
+    if (bluetooth.gap().getState().connected) {
+        environmentalService->updateHumidity((uint16_t) humidity);
+    }
+}
+
 int App::run() {
     eventQueue.call([&]() {
         ble_error_t error = bluetooth.init(this, &App::bleInitComplete);
         if (error != BLE_ERROR_NONE) {
             std::cerr << "bluetooth init error " << error << std::endl;
         }
-        eventQueue.call(this, &App::measureSensors);
-        eventQueue.call_every(5000, this, &App::measureSensors);
+        eventQueue.call(this, &App::printInfo);
+        eventQueue.call_every(3000, this, &App::measureTemperature);
+        eventQueue.call_every(3000, this, &App::measurePressure);
+        eventQueue.call_every(3000, this, &App::measureHumidity);
+        eventQueue.call_every(5000, this, &App::printInfo);
     });
     eventQueue.dispatch_forever();
     return 0;
