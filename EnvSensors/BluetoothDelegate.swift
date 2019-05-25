@@ -18,15 +18,14 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
     private var notificationCenter: NotificationCenter
     private var interestingPeripheral: CBPeripheral?
     private var scanTimer: Timer?
-    
+
     init(notificationCenter: NotificationCenter) {
         self.notificationCenter = notificationCenter
     }
-    
+
     func centralManagerDidUpdateState(_ central: CBCentralManager) {
         if (central.state == CBManagerState.poweredOn) {
-            // TODO limit scan by services
-            central.scanForPeripherals(withServices: nil, options: nil)
+            central.scanForPeripherals(withServices: [environmentalUuid], options: nil)
             // TODO suspend timer when app goes background?
             scanTimer = Timer.scheduledTimer(withTimeInterval: 20.0, repeats: true, block: { timer in
                 if self.interestingPeripheral?.state != CBPeripheralState.connecting
@@ -39,77 +38,61 @@ class BluetoothDelegate : NSObject, CBCentralManagerDelegate, CBPeripheralDelega
             })
         }
     }
-    
+
     func centralManager(_ central: CBCentralManager, didDiscover peripheral: CBPeripheral, advertisementData: [String : Any], rssi RSSI: NSNumber) {
-        //print(peripheral.name, advertisementData[CBAdvertisementDataLocalNameKey] as? NSString)
         if (advertisementData[CBAdvertisementDataLocalNameKey] as? NSString == "shitmeter") {
             central.stopScan()
             interestingPeripheral = peripheral
             central.connect(interestingPeripheral!, options: nil)
         }
     }
-    
+
     func centralManager(_ central: CBCentralManager, didConnect peripheral: CBPeripheral) {
         if (peripheral == interestingPeripheral) {
             peripheral.delegate = self
-            //print("Connected")
             peripheral.discoverServices(nil)
         }
     }
-    
+
     func peripheral(_ peripheral: CBPeripheral, didDiscoverServices error: Error?) {
         for service in peripheral.services! {
-            //print("Service", service)
             if service.uuid == environmentalUuid {
                 peripheral.discoverCharacteristics(nil, for: service)
                 break
             }
         }
     }
-    
+
     func peripheral(_ peripheral: CBPeripheral, didDiscoverCharacteristicsFor service: CBService, error: Error?) {
         for c in service.characteristics! {
             if c.uuid == temperatureUuid || c.uuid == pressureUuid || c.uuid == humidityUuid || c.uuid == co2Uuid {
                 peripheral.setNotifyValue(true, for: c)
                 peripheral.readValue(for: c)
             }
-            //print("Service", service, "Characteristics", c)
         }
     }
-    
-    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-        if (error != nil) {
-            print(error)
-        }
-    }
-    
-//    func peripheral(_ peripheral: CBPeripheral, didUpdateNotificationStateFor characteristic: CBCharacteristic, error: Error?) {
-//        print(characteristic, error)
-//    }
-    
+
     func peripheral(_ peripheral: CBPeripheral, didUpdateValueFor characteristic: CBCharacteristic, error: Error?) {
-        //print(characteristic)
-        // TODO fix endianness
-        if (characteristic.uuid == temperatureUuid) {
-            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<Int16>) in v.pointee }
-            if (value != nil) {
-                notificationCenter.post(name: Notification.Name.onTemperatureChange, object: Double.init(value!) / 100.0)
+        setValue(characteristic, temperatureUuid, Notification.Name.onTemperatureChange, 100.0, Int16.max)
+                || setValue(characteristic, pressureUuid, Notification.Name.onPressureChange, 10.0, UInt32.max)
+                || setValue(characteristic, humidityUuid, Notification.Name.onHumidityChange, 100.0, UInt16.max)
+                || setValue(characteristic, co2Uuid, Notification.Name.onCO2Change, 1.0, UInt16.max)
+    }
+
+    @inlinable func setValue<T: BinaryInteger>(
+            _ characteristic: CBCharacteristic,
+            _ uuid: CBUUID,
+            _ name: Notification.Name,
+            _ divisor: Double,
+            _ ignore: T) -> Bool {
+        if (characteristic.uuid == uuid) {
+            // TODO what about endianness?
+            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<T>) in v.pointee }
+            if (value != nil && value != ignore) {
+                notificationCenter.post(name: name, object: Double.init(value!) / divisor)
             }
-        } else if (characteristic.uuid == pressureUuid) {
-            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<UInt32>) in v.pointee }
-            if (value != nil) {
-                notificationCenter.post(name: Notification.Name.onPressureChange, object: Double.init(value!) / 10.0)
-            }
-        } else if (characteristic.uuid == humidityUuid) {
-            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<UInt16>) in v.pointee }
-            if (value != nil) {
-                notificationCenter.post(name: Notification.Name.onHumidityChange, object: Double.init(value!) / 100.0)
-            }
-        } else if (characteristic.uuid == co2Uuid) {
-            let value = characteristic.value?.withUnsafeBytes { (v: UnsafePointer<UInt16>) in v.pointee }
-            if (value != nil) {
-                notificationCenter.post(name: Notification.Name.onCO2Change, object: Double.init(value!))
-            }
+            return true
         }
+        return false
     }
 }
