@@ -92,10 +92,10 @@ public:
 private:
     BLE &ble;
 
-    TemperatureType_t temperature;
-    HumidityType_t humidity;
-    PressureType_t pressure;
-    CO2Type_t co2;
+    TemperatureType_t temperature = 0;
+    HumidityType_t humidity = 0;
+    PressureType_t pressure = 0;
+    CO2Type_t co2 = 0;
 
     ReadOnlyGattCharacteristic<TemperatureType_t> temperatureCharacteristic;
     ReadOnlyGattCharacteristic<HumidityType_t> humidityCharacteristic;
@@ -110,8 +110,10 @@ private:
 class MHZ19B {
     events::EventQueue &eventQueue;
     mbed::RawSerial mhz19bSerial;
-    uint8_t receiveBuffer[9];
     Callback<void(uint16_t)> co2handler;
+    uint8_t receiveBuffer[9]{0};
+    const time_t startTime{time(nullptr)};
+    bool propagateData{false};
     static constexpr uint8_t requestBuffer[9] = {
             0xFF,  // 0 constant
             0x01,  // 1 sensor number, probably constant
@@ -151,7 +153,16 @@ class MHZ19B {
                             << std::endl;
                 } else {
                     uint16_t co2ppm = (static_cast<uint16_t>(receiveBuffer[2]) << 8u) + receiveBuffer[3];
-                    co2handler(co2ppm);
+                    // At start sensor returns outputs 429, then 410 and only after near a two minutes
+                    // sensor starts working correctly.
+                    // But it is not known if sensor was powered before program start (reboot) or both
+                    // CPU and sensor was powered off.
+                    if (!propagateData && ((co2ppm != 429 && co2ppm != 410) || startTime + 120 <= time(nullptr))) {
+                        propagateData = true;
+                    }
+                    if (propagateData) {
+                        co2handler(co2ppm);
+                    }
                 }
             } else {
                 std::cerr << "Can't fetch co2 ppm. Buffer is" << std::hex;
@@ -167,7 +178,6 @@ public:
     MHZ19B(events::EventQueue &eventQueue, PinName receivePin, PinName transmitPin, Callback<void(uint16_t)> co2handler)
             : eventQueue(eventQueue),
               mhz19bSerial(transmitPin, receivePin, 9600),
-              receiveBuffer{0},
               co2handler{co2handler} {}
 
     void sendRequest() {
@@ -230,7 +240,7 @@ class App {
 
     void printInfo();
 
-    void onCO2Change(uint16_t co2ppm);
+    void onCO2Change(uint16_t value);
 
 public:
     int run();
@@ -340,8 +350,8 @@ void App::measureCO2() {
     mhz19b.sendRequest();
 }
 
-void App::onCO2Change(uint16_t co2ppm) {
-    this->co2ppm = co2ppm;
+void App::onCO2Change(uint16_t value) {
+    co2ppm = value;
     if (isGapConnected()) {
         environmentalService->updateCO2(co2ppm);
     }
