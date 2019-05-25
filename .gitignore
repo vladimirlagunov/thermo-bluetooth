@@ -1,7 +1,8 @@
-/.idea
-/.pio
-/.pioenvs
-/.piolibdeps
-/CMakeLists.txt
-/CMakeListsPrivate.txt
-/cmake-build-debug
+.idea/
+/nrf52/.pio
+/nrf52/.pioenvs
+/nrf52/.piolibdeps
+/nrf52/CMakeLists.txt
+/nrf52/CMakeListsPrivate.txt
+/nrf52/cmake-build-debug
+xcuserdata/
